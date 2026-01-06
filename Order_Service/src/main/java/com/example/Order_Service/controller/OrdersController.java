@@ -39,7 +39,7 @@ public class OrdersController {
 
     /*      Explanation Of how data is transferred from one project via other using OpenFeignClient
 
-    1.  When You hit the URL =" http://localhost:8081/orders/core/create-order " in postman with the desired body as needed from function signature ,it goes to com.example.Order_Service.service.OrdersService.createOrder() function .
+    1.  When You hit the URL =" http://localhost:8081/orders/core/create-order(..) " in postman with the desired body as needed from function signature ,it goes to com.example.Order_Service.service.OrdersService.createOrder() function .
 
     2. Now inside service class ,the line Double totalPrice = inventoryOpenFeignClient.reduceStocks(orderRequestDto); calls the  com.example.Order_Service.client.InventoryOpenFeignClient.reduceStocks(..) along eith body .
 
@@ -48,6 +48,29 @@ public class OrdersController {
     4. with the above link it jumps to the  com.example.Inventory_Service.service .ProductService.reduceStocks(..) and do the operation here ,and returns the Double Value as is needed .
 
     5. Now the returned Value came to the com.example.Order_Service.service.createOrder(..) and after performing all operations , finally all the products that have been ordered is shown inside response .
+
+
+
+
+CREATE ORDER VIA POSTMAN'S , BODY
+ @PostMapping URL = http://192.168.1.3:8081/orders/core/create-order
+{
+    "items": [
+        {
+            "productId": 14,
+            "quantity": 2
+        },
+        {
+            "productId": 15,
+            "quantity": 2
+        },
+        {
+            "productId": 16,
+            "quantity": 2
+        }
+    ]
+}
+
 
      */
     }

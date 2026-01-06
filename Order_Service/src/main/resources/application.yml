@@ -1,0 +1,50 @@
+management:
+  health:
+    circuitbreakers:
+      enabled: true  # Enables the inclusion of Resilience 4j circuit breaker status in the /actuator/health endpoint. When a circuit breaker is OPEN, it contributes DOWN to the overall health; HALF_OPEN contributes UNKNOWN.
+  endpoints:
+    web:
+      exposure:
+        include: "*"  # Exposes **all** Actuator endpoints over HTTP (e.g., /actuator/health, /actuator/metrics, /actuator/circuitbreakers, etc.). Use with caution in production as it exposes sensitive information—secure with Spring Security if needed.
+  endpoint:
+    health:
+      show-details: always  # Shows full health details in /actuator/health for all users (regardless of authentication). Includes component-level details like circuit breaker states, failure rates, etc.
+
+resilience4j:
+  retry:
+    configs:
+      default: # This is the default configuration for @Retry annotation
+        maxRetryAttempts: 3  # Maximum number of retry attempts (including the original call). Default is 3 if not specified.
+        waitDuration: 100ms  # Fixed duration to wait between retry attempts.
+    instances:
+      inventoryRetry: # Name must match the @Retry(name = "inventoryRetry") annotation.
+        baseConfig: default  # Inherits from the shared 'default' config.
+        waitDuration: 200ms  # Overrides the wait duration specifically for this instance (wait 200ms between retries).
+
+  ratelimiter:
+    instances:
+      inventoryRateLimiter: # Name must match the @RateLimiter(name = "inventoryRateLimiter") annotation.
+        baseConfig: default # this uses default configs defined below for @RateLimiter annotation
+
+    configs:
+      default:
+        limitRefreshPeriod: 1s  # Duration of one rate limit cycle. Permissions are refreshed/reset at the start of each cycle.
+        limitForPeriod: 100  # Maximum number of permissions (allowed calls) available per refresh cycle (e.g., 100 calls per second here).
+        timeoutDuration: 10ms  # Maximum time a thread will wait/block for a permission. If no permission is acquired within this time, RequestNotPermitted is thrown (triggers fallback if configured).
+
+  circuitbreaker:
+    instances:
+      inventoryCircuitBreaker: # Name must match the @CircuitBreaker(name = "inventoryCircuitBreaker") annotation.
+        base-config: default
+
+    configs:
+      default:
+        registerHealthIndicator: true  # Registers this circuit breaker with Spring Boot Actuator so its state (CLOSED/OPEN/HALF_OPEN) and metrics appear in /actuator/health and dedicated endpoints.
+        slidingWindowSize: 10          # Number of calls recorded in the sliding window for failure/slow call rate calculations (when CLOSED or HALF_OPEN).
+        slidingWindowType: COUNT_BASED # Uses a fixed count of recent calls (10 here) for metrics. Alternative: TIME_BASED (records calls within a time window).
+        minimumNumberOfCalls: 10       # Minimum calls required in the window before failure rate is calculated (prevents premature opening on low traffic).
+        failureRateThreshold: 50       # Failure rate percentage (≥50% failed calls in the window) that triggers transition from CLOSED to OPEN.
+        waitDurationInOpenState: 1s   # Duration the circuit breaker stays in OPEN state before transitioning to HALF_OPEN (allows downstream service recovery time).
+        permittedNumberOfCallsInHalfOpenState: 3  # Number of trial calls allowed in HALF_OPEN state to test if the downstream service has recovered.
+        eventConsumerBufferSize: 10    # Size of the internal buffer for storing circuit breaker events (used for metrics and event endpoints like /actuator/circuitbreakerevents).
+

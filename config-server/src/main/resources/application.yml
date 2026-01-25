@@ -1,20 +1,17 @@
-spring.application.name: config-server
 spring:
+  application:
+    name: config-server
   cloud:
     config:
       server:
         git:
-          uri: https://github.com/Anuj-Kumar-Sharma/ecommerce-config-server
-          username: anuj-kumar-sharma
-          password: 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
-          default-label: master
+          uri: https://github.com/manishrnl/config-server
+          username: manishrnl
+          password: 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
+          default-label: main
 server:
   port: 8888
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
-
-
-
-

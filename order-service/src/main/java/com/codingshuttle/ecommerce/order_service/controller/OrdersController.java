@@ -1,12 +1,12 @@
 package com.codingshuttle.ecommerce.order_service.controller;
 
-import com.codingshuttle.ecommerce.order_service.clients.InventoryOpenFeignClient;
+import com.codingshuttle.ecommerce.order_service.config.Permissions;
 import com.codingshuttle.ecommerce.order_service.dto.OrderRequestDto;
 import com.codingshuttle.ecommerce.order_service.service.OrdersService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,13 +19,15 @@ import java.util.List;
 public class OrdersController {
 
     private final OrdersService orderService;
-
-    @Value("${my.variable}")
-    private String myVariable;
+    private final Permissions permissions;
 
     @GetMapping("/helloOrders")
-    public String helloOrders() {
-        return "Hello from Orders Service, my variable is: "+ myVariable;
+    public ResponseEntity<String> helloOrders() {
+        String myVariable = permissions.getMyVariable();
+        if (permissions.isTrackingEnabled())
+            return new ResponseEntity<>("Congrats , Tracking is made enabled , we might put it off if traffic is large . Hello from Orders Service, my variable is: " + myVariable, HttpStatus.OK);
+        else
+            return new ResponseEntity<>("Tracking is not enabled, as we are facing a huge traffic at this moment  and value of my variable is: " + myVariable, HttpStatus.OK);
     }
 
     @PostMapping("/create-order")

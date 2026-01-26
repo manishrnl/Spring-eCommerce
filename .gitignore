@@ -1,16 +1,43 @@
-# IntelliJ IDEA files
+### JetBrains (IntelliJ IDEA) ###
 .idea/
 *.iws
 *.iml
 *.ipr
 out/
+!**/src/main/resources/archetype-resources/google-services.json
 
-# Maven build output (matches all modules)
+### Build Tools (Maven) ###
 target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
 
-# System files
+### Build Tools (Gradle) ###
+.gradle/
+build/
+!**/src/main/resources/gradle.properties
+bin/
+!**/src/main/gradle/wrapper/gradle-wrapper.jar
+
+### Logs and Temp Files ###
+*.log
+logs/
+temp/
+tmp/
+
+### OS Specific ###
 .DS_Store
 Thumbs.db
 
-# If you still want to ignore specific scratch folders
-Scratches and Consoles/
+### Local Environment Config ###
+# Avoid committing secrets/local database configs
+.env
+.env.local
+application-local.properties
+application-local.yml

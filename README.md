@@ -81,7 +81,11 @@
     elasticsearch-create-enrollment-token.bat --scope kibana --url https://127.0.0.1:9200
 ```
 
-login at Browser at and paste the token so generated above via terminal
+## Wait for 5-10 minutes till Kibana fully starts
+
+login at Browser at and paste the token so generated above via terminal . you"ll get URL
+like below in Kibana terminal opened inside cmd
+( Code generated will be different from the one shown below )
 
 ```
     http://localhost:5601/?code=510625 
